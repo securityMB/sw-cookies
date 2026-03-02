@@ -41,10 +41,7 @@ app.get('/', (req, res) => {
       });
     }
 
-    // Listen for postMessages from other frames:
-    // forward the URL string to the SW, then return the response.
     window.addEventListener('message', async (event) => {
-      if (event.origin !== window.location.origin) return;
       const url = event.data;
       if (typeof url !== 'string') return;
 
@@ -54,7 +51,8 @@ app.get('/', (req, res) => {
 
       const channel = new MessageChannel();
       channel.port1.onmessage = (e) => {
-        event.source.postMessage(e.data);
+        const {data} = e;
+        event.source.postMessage({data}, '*');
       };
       controller.postMessage(url, [channel.port2]);
     });

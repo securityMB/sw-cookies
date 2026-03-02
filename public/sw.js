@@ -1,10 +1,20 @@
 // Service Worker for sw-cookies demo
 'use strict';
 
+function isValidUrl(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 self.addEventListener('message', async (event) => {
   const url = event.data;
   if (typeof url !== 'string') return;
-
+  if (!isValidUrl(url)) return;
+  
   const port = event.ports[0];
   if (!port) return;
 
